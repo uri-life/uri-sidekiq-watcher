@@ -50,6 +50,8 @@ async function deleteJobsUntilEmpty() {
       const errorText = (await page.evaluate(element => element.textContent, errorElementHandle)).trim();
 
       if (
+        (errorText.startsWith('Encoding::InvalidByteSequenceError:')) ||
+        (errorText.startsWith('HTTP::ConnectionError: failed to connect: No address')) ||
         (jobText === 'Web::PushNotificationWorker' && errorText.includes('https://ntfy.sh/')) ||
         (jobText === 'LinkCrawlWorker' && errorText === 'ArgumentError: Document tree depth limit exceeded')
       ) {
