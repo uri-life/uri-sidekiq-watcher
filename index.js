@@ -50,10 +50,12 @@ async function deleteJobsUntilEmpty() {
       const errorText = (await page.evaluate(element => element.textContent, errorElementHandle)).trim();
 
       if (
+        (errorText.startsWith('ActiveRecord::RecordInvalid:')) ||
         (errorText.startsWith('Encoding::InvalidByteSequenceError:')) ||
         (errorText.startsWith('HTTP::ConnectionError: failed to connect: No address')) ||
-        (jobText === 'Web::PushNotificationWorker' && errorText.includes('https://ntfy.sh/')) ||
-        (jobText === 'LinkCrawlWorker' && errorText === 'ArgumentError: Document tree depth limit exceeded')
+        (jobText === 'LinkCrawlWorker' && errorText === 'ArgumentError: Document tree depth limit exceeded') ||
+        (jobText === 'LinkCrawlWorker' && errorText.startsWith('TypeError: no implicit conversion')) ||
+        (jobText === 'Web::PushNotificationWorker' && errorText.startsWith('Mastodon::UnexpectedResponseError:'))
       ) {
         const checkboxElementHandle = await tableRow.$('td:first-child input');
         await checkboxElementHandle.click();
@@ -109,7 +111,10 @@ async function retryJobsUntilEmpty() {
 
       if (
         (errorText.startsWith('Aws::S3::Errors:')) ||
-        (jobText === 'LinkCrawlWorker' && errorText.startsWith('Seahorse::Client::NetworkingError:'))
+        (errorText.startsWith('Mastodon::RaceConditionError:')) ||
+        (jobText === 'LinkCrawlWorker' && errorText.startsWith('Seahorse::Client::NetworkingError:')) ||
+        (jobText === 'RedownloadMediaWorker' && errorText.startsWith('Aws::S3::MultipartUploadError:')) ||
+        (jobText === 'RedownloadMediaWorker' && errorText.startsWith('HTTP::TimeoutError:'))
       ) {
         const checkboxElementHandle = await tableRow.$('td:first-child input');
         await checkboxElementHandle.click();
