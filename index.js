@@ -53,6 +53,10 @@ async function deleteJobsUntilEmpty() {
         (errorText.startsWith('ActiveRecord::RecordInvalid:')) ||
         (errorText.startsWith('Encoding::InvalidByteSequenceError:')) ||
         (errorText.startsWith('HTTP::ConnectionError: failed to connect: No address')) ||
+        (errorText.startsWith('NoMethodError:')) ||
+        (errorText.startsWith('URI::InvalidURIError:')) ||
+        (errorText.startsWith('Zlib::BufError:')) ||
+        (jobText === 'LinkCrawlWorker' && errorText === 'ArgumentError: Attributes per element limit exceeded') ||
         (jobText === 'LinkCrawlWorker' && errorText === 'ArgumentError: Document tree depth limit exceeded') ||
         (jobText === 'LinkCrawlWorker' && errorText.startsWith('TypeError: no implicit conversion')) ||
         (jobText === 'Web::PushNotificationWorker' && errorText.startsWith('Mastodon::UnexpectedResponseError:'))
